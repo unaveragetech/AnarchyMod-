@@ -55,7 +55,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath("dev.kikugie:stonecutter:$stonecutterVersion")
+        classpath("dev.kikugie:stonecutter:0.9.4")
     }
 }
 
