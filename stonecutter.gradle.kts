@@ -1,3 +1,7 @@
+import dev.kikugie.stonecutter.controller.StonecutterControllerExtension
+import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.getByType
+
 buildscript {
     repositories {
         maven(rootDir.resolve("gradle/stonecutter-maven").toURI())
@@ -11,7 +15,11 @@ buildscript {
 
 apply(plugin = "dev.kikugie.stonecutter")
 
-stonecutter active "1.21.11"
+configure<StonecutterControllerExtension> {
+    active("1.21.11")
+}
+
+val stonecutter = extensions.getByType<StonecutterControllerExtension>()
 
 tasks.register("chiseledBuild") {
     group = "project"

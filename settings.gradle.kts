@@ -1,8 +1,18 @@
+import dev.kikugie.stonecutter.settings.StonecutterSettingsExtension
 import org.gradle.api.GradleException
+import org.gradle.kotlin.dsl.configure
+import java.net.URI
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
 pluginManagement {
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "fabric-loom" && requested.version != null) {
+                useModule("net.fabricmc:fabric-loom:${requested.version}")
+            }
+        }
+    }
     repositories {
         maven(rootDir.resolve("gradle/stonecutter-maven").toURI())
         maven("https://maven.fabricmc.net/")
@@ -32,7 +42,7 @@ fun syncStonecutterArtifacts() {
 
         val artifactUrl = "$stonecutterArtifactBaseUrl/$fileName"
         try {
-            artifactUrl.toURL().openStream().use { input ->
+            URI.create(artifactUrl).toURL().openStream().use { input ->
                 Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING)
             }
         } catch (exception: Exception) {
@@ -61,7 +71,7 @@ buildscript {
 
 apply(plugin = "dev.kikugie.stonecutter")
 
-stonecutter {
+configure<StonecutterSettingsExtension> {
     create(rootProject) {
         versions(
             "1.19.4", "1.20", "1.20.1", "1.20.2", "1.20.3", "1.20.4",
