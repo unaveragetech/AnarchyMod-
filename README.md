@@ -42,6 +42,7 @@ Client-side Fabric mod that bypasses Mojang host blocking for configured domains
 - Build and versioning
   - [`settings.gradle.kts`](settings.gradle.kts): Stonecutter versions matrix
   - [`stonecutter.gradle.kts`](stonecutter.gradle.kts): active version + `chiseledBuild`
+  - [`gradle/stonecutter-maven`](gradle/stonecutter-maven): vendored Stonecutter 0.9.4 artifacts and sources
   - [`build.gradle.kts`](build.gradle.kts): Loom build, dependencies, resource expansion
   - [`gradle.properties`](gradle.properties): global mod metadata/version
   - [`versions/*/gradle.properties`](versions): per-Minecraft loader/API/Java settings
@@ -67,6 +68,8 @@ git clone https://github.com/6b6t/AnarchyMod.git
 cd AnarchyMod
 ./gradlew chiseledBuild
 ```
+
+The repository keeps a local Stonecutter 0.9.4 copy under [`gradle/stonecutter-maven`](gradle/stonecutter-maven). If those files are ever missing, `settings.gradle.kts` automatically re-downloads the required artifacts from the upstream Stonecutter distribution while the source project remains hosted at <https://codeberg.org/stonecutter/stonecutter>.
 
 Output jars are emitted in each version module under `versions/<mc-version>/build/libs/`.
 
