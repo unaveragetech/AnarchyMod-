@@ -1,16 +1,77 @@
+import dev.kikugie.stonecutter.settings.StonecutterSettingsExtension
+import org.gradle.api.GradleException
+import org.gradle.kotlin.dsl.configure
+import java.net.URI
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
 pluginManagement {
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "fabric-loom" && requested.version != null) {
+                useModule("net.fabricmc:fabric-loom:${requested.version}")
+            }
+        }
+    }
     repositories {
+        maven(rootDir.resolve("gradle/stonecutter-maven").toURI())
         maven("https://maven.fabricmc.net/")
         maven("https://maven.kikugie.dev/releases")
         gradlePluginPortal()
     }
 }
 
-plugins {
-    id("dev.kikugie.stonecutter") version "0.9.4"
+val stonecutterVersion = "0.9.4"
+val stonecutterSourceRepository = "https://codeberg.org/stonecutter/stonecutter"
+val stonecutterArtifactRepository = rootDir.resolve("gradle/stonecutter-maven")
+val stonecutterArtifactBaseUrl = "https://plugins.gradle.org/m2/dev/kikugie/stonecutter/$stonecutterVersion"
+val stonecutterArtifactFiles = listOf(
+    "stonecutter-$stonecutterVersion.jar",
+    "stonecutter-$stonecutterVersion-sources.jar",
+    "stonecutter-$stonecutterVersion.pom",
+    "stonecutter-$stonecutterVersion.module"
+)
+
+fun syncStonecutterArtifacts() {
+    val artifactDirectory = stonecutterArtifactRepository.resolve("dev/kikugie/stonecutter/$stonecutterVersion")
+    Files.createDirectories(artifactDirectory.toPath())
+
+    stonecutterArtifactFiles.forEach { fileName ->
+        val target = artifactDirectory.resolve(fileName).toPath()
+        if (Files.exists(target)) return@forEach
+
+        val artifactUrl = "$stonecutterArtifactBaseUrl/$fileName"
+        try {
+            URI.create(artifactUrl).toURL().openStream().use { input ->
+                Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING)
+            }
+        } catch (exception: Exception) {
+            throw GradleException(
+                "Unable to download missing Stonecutter artifact '$fileName' from $artifactUrl. " +
+                    "Restore the vendored copy under gradle/stonecutter-maven or refresh it from $stonecutterSourceRepository.",
+                exception
+            )
+        }
+    }
 }
 
-stonecutter {
+syncStonecutterArtifacts()
+
+buildscript {
+    repositories {
+        maven(rootDir.resolve("gradle/stonecutter-maven").toURI())
+        maven("https://maven.fabricmc.net/")
+        maven("https://maven.kikugie.dev/releases")
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath("dev.kikugie:stonecutter:0.9.4")
+    }
+}
+
+apply(plugin = "dev.kikugie.stonecutter")
+
+configure<StonecutterSettingsExtension> {
     create(rootProject) {
         versions(
             "1.19.4", "1.20", "1.20.1", "1.20.2", "1.20.3", "1.20.4",
