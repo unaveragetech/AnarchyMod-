@@ -3,7 +3,7 @@
   "id": "anarchymod",
   "version": "${version}",
   "name": "AnarchyMod",
-  "description": "Bypass a potential Mojang blacklist of 6b6t - the biggest anarchy server in the world.",
+  "description": "Client-side unblock support for communities impacted by Mojang blocked-server host checks.",
   "authors": [
     "6b6t"
   ],

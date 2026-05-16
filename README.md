@@ -3,13 +3,19 @@
 [![Build](https://github.com/6b6t/AnarchyMod/actions/workflows/build.yml/badge.svg)](https://github.com/6b6t/AnarchyMod/actions/workflows/build.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-🔓 Bypass a potential Mojang blacklist of 6b6t - the biggest anarchy server in the world.
+🔓 Client-side unblock support for communities that are impacted by Mojang's blocked-server host list.
 
 ## Features
 
-- **Server unblocking** — bypasses Mojang's blocked server list for known anarchy servers
-- **Auto server list** — automatically adds 6b6t to your server list if not already present
-- **Join notification** — sends a lightweight packet to the server on join for analytics
+- **Server-type agnostic unblocking** — only checks host/domain entries, so it works regardless of gameplay type
+- **Auto server list population** — adds featured community servers if they are missing from your list
+- **Pre-add preview logging** — logs every server that is queued before auto-add insertion occurs
+- **Join notification** — sends a lightweight packet when connecting to a matched host
+
+## Documentation
+
+- [Bypass overview](docs/BYPASS_OVERVIEW.md)
+- [Blocked server host/IP list](docs/BLOCKED_SERVERS.md)
 
 ## Supported Minecraft Versions
 
@@ -50,10 +56,10 @@ Requires Java 21+.
 ```sh
 git clone https://github.com/6b6t/AnarchyMod.git
 cd AnarchyMod
-./gradlew build
+./gradlew chiseledBuild
 ```
 
-Built JARs are located in each module's `build/libs/` directory.
+Built JARs are located in each version module's `build/libs/` directory.
 
 ## License
 
